@@ -1,0 +1,17 @@
+# Normaliza finales de línea para trabajar en Linux y desplegar desde runners Linux.
+* text=auto eol=lf
+
+*.sln        text eol=crlf
+*.csproj     text eol=lf
+*.cs         text eol=lf
+*.cshtml     text eol=lf
+*.json       text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.md         text eol=lf
+*.sh         text eol=lf
+*.png       binary
+*.jpg       binary
+*.ico       binary
+*.woff      binary
+*.woff2     binary
