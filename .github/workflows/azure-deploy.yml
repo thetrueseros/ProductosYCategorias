@@ -1,0 +1,177 @@
+name: Compilar, migrar y desplegar en Azure
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Evita que dos despliegues se pisen. No cancela uno en curso.
+concurrency:
+  group: productosycategorias-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_VERSION: "9.0.x"
+  DOTNET_NOLOGO: "true"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
+  CONFIGURATION: Release
+  AZURE_WEBAPP_NAME: productosycategorias-thetrueseros
+  AZURE_RESOURCE_GROUP: ProductosYCategoriasGroup
+
+jobs:
+  build:
+    name: Compilar y publicar
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restaurar dependencias
+        run: dotnet restore ProductosYCategorias.csproj
+
+      - name: Compilar
+        run: >-
+          dotnet build ProductosYCategorias.csproj
+          --configuration ${{ env.CONFIGURATION }}
+          --no-restore
+
+      - name: Publicar
+        run: >-
+          dotnet publish ProductosYCategorias.csproj
+          --configuration ${{ env.CONFIGURATION }}
+          --no-build
+          --no-restore
+          --output ./publish
+
+      - name: Subir artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: ./publish
+          retention-days: 7
+          if-no-files-found: error
+
+  migrate:
+    name: Aplicar migraciones
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Comprobar el secreto de Azure SQL
+        env:
+          SQL_CONNECTION: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+        run: |
+          if [ -z "$SQL_CONNECTION" ] || [[ "$SQL_CONNECTION" == *"TU_SERVIDOR"* ]]; then
+            echo "::error::Configura AZURE_SQL_CONNECTION_STRING con la cadena real de Azure SQL."
+            exit 1
+          fi
+
+      - name: Restaurar herramientas locales
+        run: dotnet tool restore
+
+      - name: Restaurar dependencias
+        run: dotnet restore ProductosYCategorias.csproj
+
+      - name: Compilar
+        run: >-
+          dotnet build ProductosYCategorias.csproj
+          --configuration ${{ env.CONFIGURATION }}
+          --no-restore
+
+      - name: Aplicar migraciones a Azure SQL
+        env:
+          ConnectionStrings__DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+        run: >-
+          dotnet ef database update
+          --project ProductosYCategorias.csproj
+          --startup-project ProductosYCategorias.csproj
+          --configuration ${{ env.CONFIGURATION }}
+          --no-build
+
+  deploy:
+    name: Desplegar en App Service
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - migrate
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+
+    steps:
+      - name: Descargar artefacto
+        uses: actions/download-artifact@v4
+        with:
+          name: app
+          path: ./publish
+
+      - name: Iniciar sesión en Azure con OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # App Service para Linux termina TLS en el front-end. Sin esto,
+      # UseHttpsRedirection/UseHsts pueden provocar un bucle de redirecciones.
+      - name: Configurar forwarded headers
+        run: |
+          az webapp config appsettings set \
+            --name "$AZURE_WEBAPP_NAME" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --settings \
+              ASPNETCORE_FORWARDEDHEADERS_ENABLED=true \
+              SCM_DO_BUILD_DURING_DEPLOYMENT=false \
+            --output none
+
+      - name: Desplegar en App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ./publish
+
+      - name: Smoke test
+        run: |
+          host=$(az webapp show \
+            --name "$AZURE_WEBAPP_NAME" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --query defaultHostName \
+            --output tsv)
+
+          echo "Comprobando https://$host/"
+          curl --fail --silent --show-error --location --max-redirs 5 \
+            --retry 6 --retry-delay 5 --retry-connrefused \
+            --max-time 30 "https://$host/" > /dev/null
+
+          echo "Comprobando https://$host/Products"
+          curl --fail --silent --show-error --location --max-redirs 5 \
+            --retry 6 --retry-delay 5 --retry-connrefused \
+            --max-time 30 "https://$host/Products" > /dev/null
+
+          echo "Despliegue correcto: https://$host"

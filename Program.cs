@@ -49,6 +49,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
+
+// En Azure App Service Linux el TLS termina en el front-end. El workflow define
+// ASPNETCORE_FORWARDEDHEADERS_ENABLED=true para que la redirección a HTTPS no entre en bucle.
 app.UseHttpsRedirection();
 app.UseRequestLocalization();
 app.UseRouting();
