@@ -1,0 +1,141 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model ProductosYCategorias.Models.ViewModels.ProductIndexViewModel
+
+@{
+    ViewData["Title"] = "Productos";
+
+    var categories = new SelectList(Model.Categories, nameof(Category.Id), nameof(Category.Name), Model.CategoryId);
+    var pageSizes = new[] { 4, 8, 12, 24 };
+
+    string NextSort(string ascending, string descending) =>
+        string.Equals(Model.SortOrder, ascending, StringComparison.OrdinalIgnoreCase) ? descending : ascending;
+
+    string SortIcon(string ascending, string descending) =>
+        string.Equals(Model.SortOrder, ascending, StringComparison.OrdinalIgnoreCase) ? "▲"
+        : string.Equals(Model.SortOrder, descending, StringComparison.OrdinalIgnoreCase) ? "▼"
+        : "↕";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="mb-1">Productos</h1>
+        <p class="text-muted mb-0">@Model.PageInfo.TotalItems producto(s) encontrado(s)</p>
+    </div>
+    <a asp-action="Create" class="btn btn-success">Nuevo producto</a>
+</div>
+
+<form method="get" asp-action="Index" class="card card-body mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-md-4">
+            <label for="search" class="form-label">Buscar</label>
+            <input id="search" name="search" value="@Model.Search" class="form-control"
+                   type="search" placeholder="Nombre del producto..." />
+        </div>
+        <div class="col-12 col-md-3">
+            <label for="categoryId" class="form-label">Categoría</label>
+            <select id="categoryId" name="categoryId" class="form-select" asp-items="categories">
+                <option value="">Todas</option>
+            </select>
+        </div>
+        <div class="col-6 col-md-2">
+            <label for="pageSize" class="form-label">Por página</label>
+            <select id="pageSize" name="pageSize" class="form-select">
+                @foreach (var size in pageSizes)
+                {
+                    <option value="@size" selected="@(size == Model.PageSize)">@size</option>
+                }
+            </select>
+        </div>
+        <div class="col-6 col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-fill">Filtrar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </div>
+    <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
+</form>
+
+@if (Model.IsEmpty)
+{
+    <div class="alert alert-info">
+        No hay productos que coincidan con los filtros.
+        @if (Model.HasFilters)
+        {
+            <a asp-action="Index">Ver todos</a>
+        }
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">
+                        <a class="link-dark text-decoration-none" asp-action="Index"
+                           asp-route-search="@Model.Search"
+                           asp-route-categoryId="@Model.CategoryId"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder="@NextSort("name", "name_desc")">
+                            Nombre @SortIcon("name", "name_desc")
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a class="link-dark text-decoration-none" asp-action="Index"
+                           asp-route-search="@Model.Search"
+                           asp-route-categoryId="@Model.CategoryId"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder="@NextSort("price", "price_desc")">
+                            Precio @SortIcon("price", "price_desc")
+                        </a>
+                    </th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">
+                        <a class="link-dark text-decoration-none" asp-action="Index"
+                           asp-route-search="@Model.Search"
+                           asp-route-categoryId="@Model.CategoryId"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-sortOrder="@NextSort("date", "date_desc")">
+                            Fecha @SortIcon("date", "date_desc")
+                        </a>
+                    </th>
+                    <th scope="col" class="text-end">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Products)
+            {
+                var stockClass = item.Stock == 0
+                    ? "bg-danger"
+                    : item.Stock < 5 ? "bg-warning text-dark" : "bg-success";
+
+                <tr>
+                    <td class="fw-semibold">@item.Name</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td><span class="badge @stockClass">@item.Stock</span></td>
+                    <td>
+                        <a asp-action="Index"
+                           asp-route-categoryId="@item.CategoryId"
+                           asp-route-pageSize="@Model.PageSize">
+                            @item.Category?.Name
+                        </a>
+                    </td>
+                    <td>@item.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Ver</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <small class="text-muted">
+            Mostrando @Model.PageInfo.FirstItem–@Model.PageInfo.LastItem de @Model.PageInfo.TotalItems
+        </small>
+        <partial name="_Pagination" model="Model.PageInfo" />
+    </div>
+}

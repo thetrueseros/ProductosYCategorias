@@ -16,7 +16,9 @@ public class Product
     public string Name { get; set; } = string.Empty;
 
     [Range(typeof(decimal), "0.01", "9999999999999999.99",
-        ErrorMessage = "El precio debe estar entre {1} y {2}.")]
+        ParseLimitsInInvariantCulture = true,
+        ConvertValueInInvariantCulture = true,
+        ErrorMessage = "El precio debe ser mayor que cero.")]
     [Column(TypeName = "decimal(18,2)")]
     [DataType(DataType.Currency)]
     [Display(Name = "Precio")]

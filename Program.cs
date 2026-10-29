@@ -2,11 +2,15 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using ProductosYCategorias.Data;
+using ProductosYCategorias.Infrastructure.ModelBinding;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Servicios MVC.
-builder.Services.AddControllersWithViews();
+// Servicios MVC. El binder de decimal acepta coma y punto como separador decimal.
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBinderProviders.Insert(0, new FlexibleDecimalModelBinderProvider());
+});
 
 // Cadena de conexión: nunca en appsettings.json. En local se toma de
 // appsettings.Development.json; en Azure, de la variable ConnectionStrings__DefaultConnection.
