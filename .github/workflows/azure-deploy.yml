@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 env:
-  DOTNET_VERSION: "9.0.x"
+  DOTNET_VERSION: "10.0.x"
   DOTNET_NOLOGO: "true"
   DOTNET_CLI_TELEMETRY_OPTOUT: "true"
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
@@ -148,6 +148,15 @@ jobs:
             --settings \
               ASPNETCORE_FORWARDEDHEADERS_ENABLED=true \
               SCM_DO_BUILD_DURING_DEPLOYMENT=false \
+            --output none
+
+      # Mantiene el runtime del App Service alineado con el TargetFramework del proyecto.
+      - name: Asegurar runtime .NET 10
+        run: |
+          az webapp config set \
+            --name "$AZURE_WEBAPP_NAME" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --linux-fx-version "DOTNETCORE|10.0" \
             --output none
 
       - name: Desplegar en App Service
