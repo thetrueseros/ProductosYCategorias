@@ -1,30 +1,79 @@
 @model ProductosYCategorias.Models.Category
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name;
+    var products = Model.Products
+        .OrderBy(p => p.Name)
+        .ToList();
 }
 
-<h1>Details</h1>
+<nav aria-label="migas de pan" class="mb-2">
+    <ol class="breadcrumb small mb-0">
+        <li class="breadcrumb-item"><a asp-action="Index">Categorías</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+</nav>
 
-<div>
-    <h4>Category</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+    <div>
+        <h1 class="mb-1">@Model.Name</h1>
+        <p class="text-muted mb-0">
+            @(string.IsNullOrWhiteSpace(Model.Description) ? "Sin descripción." : Model.Description)
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Editar</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Eliminar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="card">
+    <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <h2 class="h6 mb-0">Productos (@products.Count)</h2>
+        <a asp-controller="Products" asp-action="Create" class="btn btn-sm btn-success">Añadir producto</a>
+    </div>
+
+    @if (products.Count == 0)
+    {
+        <div class="card-body empty-state">
+            <p class="mb-3">Esta categoría todavía no tiene productos.</p>
+            <a asp-controller="Products" asp-action="Create" class="btn btn-primary">Crear el primero</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Producto</th>
+                        <th scope="col" class="text-end">Precio</th>
+                        <th scope="col" class="text-center">Stock</th>
+                        <th scope="col" class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var product in products)
+                {
+                    var stockClass = product.Stock == 0
+                        ? "bg-danger"
+                        : product.Stock < 5 ? "bg-warning text-dark" : "bg-success";
+
+                    <tr>
+                        <td class="fw-semibold">@product.Name</td>
+                        <td class="text-end">@product.Price.ToString("C")</td>
+                        <td class="text-center"><span class="badge @stockClass">@product.Stock</span></td>
+                        <td class="text-end text-nowrap">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id"
+                               class="btn btn-sm btn-outline-secondary">Ver</a>
+                            <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id"
+                               class="btn btn-sm btn-outline-primary">Editar</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

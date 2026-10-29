@@ -1,8 +1,157 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model ProductosYCategorias.Models.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="hero rounded-4 p-4 p-md-5 mb-4">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+            <span class="badge text-bg-primary mb-2">Panel de control</span>
+            <h1 class="display-6 fw-semibold mb-2">Productos y Categorías</h1>
+            <p class="lead text-muted mb-0">
+                Gestiona tu catálogo, controla el stock y detecta rápidamente los productos que necesitan reposición.
+            </p>
+        </div>
+        <div class="col-lg-4 d-flex flex-wrap gap-2 justify-content-lg-end">
+            <a asp-controller="Products" asp-action="Create" class="btn btn-success">Nuevo producto</a>
+            <a asp-controller="Categories" asp-action="Create" class="btn btn-outline-primary">Nueva categoría</a>
+        </div>
+    </div>
+</section>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4">
+    <div class="col">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="stat-label">Productos</div>
+                <div class="stat-value">@Model.TotalProducts</div>
+                <a asp-controller="Products" asp-action="Index" class="small text-decoration-none">Ver catálogo &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="stat-label">Categorías</div>
+                <div class="stat-value">@Model.TotalCategories</div>
+                <a asp-controller="Categories" asp-action="Index" class="small text-decoration-none">Ver categorías &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="stat-label">Unidades en stock</div>
+                <div class="stat-value">@Model.TotalStock.ToString("N0")</div>
+                <span class="small text-muted">@Model.OutOfStockCount sin existencias</span>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card h-100">
+            <div class="card-body">
+                <div class="stat-label">Valor del inventario</div>
+                <div class="stat-value">@Model.InventoryValue.ToString("C")</div>
+                <span class="small text-muted">Precio × stock</span>
+            </div>
+        </div>
+    </div>
 </div>
+
+@if (Model.LowStockProducts.Count > 0)
+{
+    <div class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center gap-2" role="alert">
+        <div>
+            <strong>@Model.LowStockCount producto(s) necesitan reposición.</strong>
+            Tienen stock bajo o están sin existencias.
+        </div>
+        <a asp-controller="Products" asp-action="Index" asp-route-sortOrder="name" class="btn btn-sm btn-outline-dark">
+            Revisar productos
+        </a>
+    </div>
+}
+
+@if (Model.IsEmpty)
+{
+    <div class="card">
+        <div class="card-body empty-state">
+            <h2 class="h5">Todavía no hay productos</h2>
+            <p class="mb-3">Crea tu primera categoría y añade productos para empezar a ver estadísticas.</p>
+            <a asp-controller="Categories" asp-action="Create" class="btn btn-primary">Crear categoría</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        <div class="col-12 col-xl-7">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h2 class="h6 mb-0">Últimos productos</h2>
+                    <a asp-controller="Products" asp-action="Index" class="small text-decoration-none">Ver todos</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">Producto</th>
+                                <th scope="col">Categoría</th>
+                                <th scope="col" class="text-end">Precio</th>
+                                <th scope="col" class="text-center">Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var product in Model.LatestProducts)
+                        {
+                            var stockClass = product.Stock == 0
+                                ? "bg-danger"
+                                : product.Stock < 5 ? "bg-warning text-dark" : "bg-success";
+
+                            <tr>
+                                <td>
+                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id"
+                                       class="fw-semibold text-decoration-none">
+                                        @product.Name
+                                    </a>
+                                </td>
+                                <td class="text-muted">@(product.Category?.Name ?? "—")</td>
+                                <td class="text-end">@product.Price.ToString("C")</td>
+                                <td class="text-center"><span class="badge @stockClass">@product.Stock</span></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-5">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h2 class="h6 mb-0">Productos por categoría</h2>
+                    <a asp-controller="Categories" asp-action="Index" class="small text-decoration-none">Gestionar</a>
+                </div>
+                <div class="card-body">
+                    @foreach (var category in Model.TopCategories)
+                    {
+                        var width = category.Share.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture);
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.Id"
+                                   class="text-decoration-none">@category.Name</a>
+                                <span class="small text-muted">@category.ProductCount (@category.Share.ToString("0.#") %)</span>
+                            </div>
+                            <div class="progress mt-1" role="progressbar"
+                                 aria-label="Productos en @category.Name"
+                                 aria-valuenow="@category.ProductCount" aria-valuemin="0" aria-valuemax="@Model.TotalProducts">
+                                <div class="progress-bar" style="width: @width%"></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,48 +1,80 @@
 @model ProductosYCategorias.Models.Product
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name;
+
+    var stockClass = Model.Stock == 0
+        ? "bg-danger"
+        : Model.Stock < 5 ? "bg-warning text-dark" : "bg-success";
+
+    var stockLabel = Model.Stock == 0
+        ? "Sin existencias"
+        : Model.Stock < 5 ? "Stock bajo" : "Disponible";
 }
 
-<h1>Details</h1>
+<nav aria-label="migas de pan" class="mb-2">
+    <ol class="breadcrumb small mb-0">
+        <li class="breadcrumb-item"><a asp-action="Index">Productos</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+</nav>
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Stock)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Stock)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @(Model.Category?.Name ?? "—")
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaCreacion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaCreacion)
-        </dd>
-    </dl>
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+    <div>
+        <h1 class="mb-1">@Model.Name</h1>
+        <p class="text-muted mb-0">
+            Categoría:
+            <a asp-controller="Categories" asp-action="Details" asp-route-id="@Model.CategoryId"
+               class="text-decoration-none">@(Model.Category?.Name ?? "—")</a>
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Editar</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Eliminar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="row g-4">
+    <div class="col-12 col-md-7">
+        <div class="card h-100">
+            <div class="card-header bg-white">
+                <h2 class="h6 mb-0">Detalles del producto</h2>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Nombre</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+
+                    <dt class="col-sm-4">Precio</dt>
+                    <dd class="col-sm-8">@Model.Price.ToString("C")</dd>
+
+                    <dt class="col-sm-4">Categoría</dt>
+                    <dd class="col-sm-8">
+                        <a asp-controller="Categories" asp-action="Details" asp-route-id="@Model.CategoryId"
+                           class="text-decoration-none">@(Model.Category?.Name ?? "—")</a>
+                    </dd>
+
+                    <dt class="col-sm-4">Fecha de creación</dt>
+                    <dd class="col-sm-8">@Model.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-5">
+        <div class="card h-100">
+            <div class="card-header bg-white">
+                <h2 class="h6 mb-0">Inventario</h2>
+            </div>
+            <div class="card-body">
+                <div class="stat-label">Unidades disponibles</div>
+                <div class="stat-value mb-2">@Model.Stock.ToString("N0")</div>
+                <span class="badge @stockClass mb-3">@stockLabel</span>
+                <p class="small text-muted mb-0">
+                    Valor en stock: <strong>@((Model.Price * Model.Stock).ToString("C"))</strong>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
