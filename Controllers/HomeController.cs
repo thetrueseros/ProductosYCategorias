@@ -17,8 +17,18 @@ public class HomeController : Controller
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    public IActionResult Error(int? statusCode = null)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        var code = statusCode ?? StatusCodes.Status500InternalServerError;
+        Response.StatusCode = code;
+
+        return View(new ErrorViewModel
+        {
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+            StatusCode = code,
+            Message = code == StatusCodes.Status404NotFound
+                ? "La página que buscas no existe."
+                : "Ha ocurrido un error inesperado. Inténtalo de nuevo."
+        });
     }
 }
