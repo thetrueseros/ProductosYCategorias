@@ -25,8 +25,8 @@
                     <dt class="col-sm-3">Nombre</dt>
                     <dd class="col-sm-9">@Model.Name</dd>
 
-                    <dt class="col-sm-3">Precio</dt>
-                    <dd class="col-sm-9">@Model.Price.ToString("C")</dd>
+                    <dt class="col-sm-3">Precio (COP)</dt>
+                    <dd class="col-sm-9">@Model.Price.ToString("C2")</dd>
 
                     <dt class="col-sm-3">Stock</dt>
                     <dd class="col-sm-9">@Model.Stock unidad(es)</dd>
@@ -35,7 +35,7 @@
                     <dd class="col-sm-9">@(Model.Category?.Name ?? "—")</dd>
 
                     <dt class="col-sm-3">Fecha de creación</dt>
-                    <dd class="col-sm-9">@Model.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+                    <dd class="col-sm-9">@ColombiaTime.FromUtc(Model.FechaCreacion).ToString("dd/MM/yyyy HH:mm")</dd>
                 </dl>
             </div>
 

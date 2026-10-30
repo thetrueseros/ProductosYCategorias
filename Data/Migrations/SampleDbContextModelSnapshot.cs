@@ -17,7 +17,7 @@ namespace ProductosYCategorias.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.22")
+                .HasAnnotation("ProductVersion", "10.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -123,180 +123,180 @@ namespace ProductosYCategorias.Data.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            FechaCreacion = new DateTime(2026, 1, 5, 9, 30, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 5, 14, 30, 0, 0, DateTimeKind.Utc),
                             Name = "Laptop Pro 14",
-                            Price = 1299.99m,
+                            Price = 5499900m,
                             Stock = 12
                         },
                         new
                         {
                             Id = 2,
                             CategoryId = 1,
-                            FechaCreacion = new DateTime(2026, 1, 7, 11, 0, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 7, 16, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Mouse Inalámbrico",
-                            Price = 24.50m,
+                            Price = 89900m,
                             Stock = 80
                         },
                         new
                         {
                             Id = 3,
                             CategoryId = 1,
-                            FechaCreacion = new DateTime(2026, 1, 9, 15, 45, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 9, 20, 45, 0, 0, DateTimeKind.Utc),
                             Name = "Teclado Mecánico",
-                            Price = 89.90m,
+                            Price = 249900m,
                             Stock = 45
                         },
                         new
                         {
                             Id = 4,
                             CategoryId = 1,
-                            FechaCreacion = new DateTime(2026, 1, 12, 8, 15, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 12, 13, 15, 0, 0, DateTimeKind.Utc),
                             Name = "Monitor 27\" 4K",
-                            Price = 349.00m,
+                            Price = 1499900m,
                             Stock = 18
                         },
                         new
                         {
                             Id = 5,
                             CategoryId = 1,
-                            FechaCreacion = new DateTime(2026, 1, 15, 17, 20, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 15, 22, 20, 0, 0, DateTimeKind.Utc),
                             Name = "Auriculares Bluetooth",
-                            Price = 59.99m,
+                            Price = 199900m,
                             Stock = 60
                         },
                         new
                         {
                             Id = 6,
                             CategoryId = 2,
-                            FechaCreacion = new DateTime(2026, 1, 18, 10, 0, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 18, 15, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Lámpara de Escritorio",
-                            Price = 32.75m,
+                            Price = 79900m,
                             Stock = 25
                         },
                         new
                         {
                             Id = 7,
                             CategoryId = 2,
-                            FechaCreacion = new DateTime(2026, 1, 20, 12, 30, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 20, 17, 30, 0, 0, DateTimeKind.Utc),
                             Name = "Juego de Sábanas",
-                            Price = 45.00m,
+                            Price = 129900m,
                             Stock = 30
                         },
                         new
                         {
                             Id = 8,
                             CategoryId = 2,
-                            FechaCreacion = new DateTime(2026, 1, 23, 9, 10, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 23, 14, 10, 0, 0, DateTimeKind.Utc),
                             Name = "Cafetera de Goteo",
-                            Price = 79.90m,
+                            Price = 189900m,
                             Stock = 15
                         },
                         new
                         {
                             Id = 9,
                             CategoryId = 2,
-                            FechaCreacion = new DateTime(2026, 1, 26, 14, 5, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 26, 19, 5, 0, 0, DateTimeKind.Utc),
                             Name = "Aspiradora Compacta",
-                            Price = 149.99m,
+                            Price = 599900m,
                             Stock = 8
                         },
                         new
                         {
                             Id = 10,
                             CategoryId = 2,
-                            FechaCreacion = new DateTime(2026, 1, 29, 16, 40, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 1, 29, 21, 40, 0, 0, DateTimeKind.Utc),
                             Name = "Set de Ollas",
-                            Price = 119.00m,
+                            Price = 349900m,
                             Stock = 10
                         },
                         new
                         {
                             Id = 11,
                             CategoryId = 3,
-                            FechaCreacion = new DateTime(2026, 2, 2, 8, 0, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 2, 13, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Balón de Fútbol",
-                            Price = 29.99m,
+                            Price = 89900m,
                             Stock = 50
                         },
                         new
                         {
                             Id = 12,
                             CategoryId = 3,
-                            FechaCreacion = new DateTime(2026, 2, 5, 11, 25, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 5, 16, 25, 0, 0, DateTimeKind.Utc),
                             Name = "Mancuernas 10 kg",
-                            Price = 54.90m,
+                            Price = 149900m,
                             Stock = 22
                         },
                         new
                         {
                             Id = 13,
                             CategoryId = 3,
-                            FechaCreacion = new DateTime(2026, 2, 8, 13, 50, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 8, 18, 50, 0, 0, DateTimeKind.Utc),
                             Name = "Esterilla de Yoga",
-                            Price = 19.99m,
+                            Price = 59900m,
                             Stock = 70
                         },
                         new
                         {
                             Id = 14,
                             CategoryId = 3,
-                            FechaCreacion = new DateTime(2026, 2, 11, 10, 35, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 11, 15, 35, 0, 0, DateTimeKind.Utc),
                             Name = "Bicicleta Estática",
-                            Price = 299.00m,
+                            Price = 1299900m,
                             Stock = 6
                         },
                         new
                         {
                             Id = 15,
                             CategoryId = 3,
-                            FechaCreacion = new DateTime(2026, 2, 14, 15, 0, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 14, 20, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Raqueta de Tenis",
-                            Price = 89.50m,
+                            Price = 249900m,
                             Stock = 14
                         },
                         new
                         {
                             Id = 16,
                             CategoryId = 4,
-                            FechaCreacion = new DateTime(2026, 2, 17, 9, 45, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 17, 14, 45, 0, 0, DateTimeKind.Utc),
                             Name = "Cien Años de Soledad",
-                            Price = 21.90m,
+                            Price = 59900m,
                             Stock = 40
                         },
                         new
                         {
                             Id = 17,
                             CategoryId = 4,
-                            FechaCreacion = new DateTime(2026, 2, 20, 12, 0, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 20, 17, 0, 0, 0, DateTimeKind.Utc),
                             Name = "El Quijote",
-                            Price = 18.50m,
+                            Price = 49900m,
                             Stock = 35
                         },
                         new
                         {
                             Id = 18,
                             CategoryId = 4,
-                            FechaCreacion = new DateTime(2026, 2, 23, 14, 30, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 23, 19, 30, 0, 0, DateTimeKind.Utc),
                             Name = "Clean Code",
-                            Price = 39.99m,
+                            Price = 129900m,
                             Stock = 20
                         },
                         new
                         {
                             Id = 19,
                             CategoryId = 5,
-                            FechaCreacion = new DateTime(2026, 2, 26, 8, 20, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 2, 26, 13, 20, 0, 0, DateTimeKind.Utc),
                             Name = "Café Molido 500 g",
-                            Price = 8.75m,
+                            Price = 24900m,
                             Stock = 100
                         },
                         new
                         {
                             Id = 20,
                             CategoryId = 5,
-                            FechaCreacion = new DateTime(2026, 3, 1, 16, 10, 0, 0, DateTimeKind.Utc),
+                            FechaCreacion = new DateTime(2026, 3, 1, 21, 10, 0, 0, DateTimeKind.Utc),
                             Name = "Chocolate Negro 70%",
-                            Price = 4.20m,
+                            Price = 12900m,
                             Stock = 120
                         });
                 });

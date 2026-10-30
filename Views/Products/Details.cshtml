@@ -46,8 +46,8 @@
                     <dt class="col-sm-4">Nombre</dt>
                     <dd class="col-sm-8">@Model.Name</dd>
 
-                    <dt class="col-sm-4">Precio</dt>
-                    <dd class="col-sm-8">@Model.Price.ToString("C")</dd>
+                    <dt class="col-sm-4">Precio (COP)</dt>
+                    <dd class="col-sm-8">@Model.Price.ToString("C2")</dd>
 
                     <dt class="col-sm-4">Categoría</dt>
                     <dd class="col-sm-8">
@@ -56,7 +56,7 @@
                     </dd>
 
                     <dt class="col-sm-4">Fecha de creación</dt>
-                    <dd class="col-sm-8">@Model.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</dd>
+                    <dd class="col-sm-8">@ColombiaTime.FromUtc(Model.FechaCreacion).ToString("dd/MM/yyyy HH:mm")</dd>
                 </dl>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 <div class="stat-value mb-2">@Model.Stock.ToString("N0")</div>
                 <span class="badge @stockClass mb-3">@stockLabel</span>
                 <p class="small text-muted mb-0">
-                    Valor en stock: <strong>@((Model.Price * Model.Stock).ToString("C"))</strong>
+                    Valor en stock: <strong>@((Model.Price * Model.Stock).ToString("C2"))</strong>
                 </p>
             </div>
         </div>

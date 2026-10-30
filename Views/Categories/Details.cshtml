@@ -48,7 +48,7 @@
                 <thead class="table-light">
                     <tr>
                         <th scope="col">Producto</th>
-                        <th scope="col" class="text-end">Precio</th>
+                        <th scope="col" class="text-end">Precio (COP)</th>
                         <th scope="col" class="text-center">Stock</th>
                         <th scope="col" class="text-end">Acciones</th>
                     </tr>
@@ -62,7 +62,7 @@
 
                     <tr>
                         <td class="fw-semibold">@product.Name</td>
-                        <td class="text-end">@product.Price.ToString("C")</td>
+                        <td class="text-end">@product.Price.ToString("C2")</td>
                         <td class="text-center"><span class="badge @stockClass">@product.Stock</span></td>
                         <td class="text-end text-nowrap">
                             <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id"

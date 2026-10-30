@@ -85,7 +85,7 @@ else
                            asp-route-categoryId="@Model.CategoryId"
                            asp-route-pageSize="@Model.PageSize"
                            asp-route-sortOrder="@NextSort("price", "price_desc")">
-                            Precio @SortIcon("price", "price_desc")
+                            Precio (COP) @SortIcon("price", "price_desc")
                         </a>
                     </th>
                     <th scope="col">Stock</th>
@@ -111,7 +111,7 @@ else
 
                 <tr>
                     <td class="fw-semibold">@item.Name</td>
-                    <td>@item.Price.ToString("C")</td>
+                    <td>@item.Price.ToString("C2")</td>
                     <td><span class="badge @stockClass">@item.Stock</span></td>
                     <td>
                         <a asp-action="Index"
@@ -120,7 +120,7 @@ else
                             @item.Category?.Name
                         </a>
                     </td>
-                    <td>@item.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@ColombiaTime.FromUtc(item.FechaCreacion).ToString("dd/MM/yyyy HH:mm")</td>
                     <td class="text-end text-nowrap">
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Ver</a>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Editar</a>

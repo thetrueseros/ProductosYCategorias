@@ -20,7 +20,7 @@
             <div class="mb-3">
                 <label asp-for="Price" class="form-label"></label>
                 <input asp-for="Price" class="form-control" type="text" inputmode="decimal" autocomplete="off" />
-                <div class="form-text">Puedes usar coma o punto como separador decimal (1299,99 o 1299.99).</div>
+                <div class="form-text">En pesos colombianos (COP). Acepta punto de miles y coma decimal: 5.499.900 o 5499900,50.</div>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 

@@ -51,8 +51,8 @@
     <div class="col">
         <div class="card stat-card h-100">
             <div class="card-body">
-                <div class="stat-label">Valor del inventario</div>
-                <div class="stat-value">@Model.InventoryValue.ToString("C")</div>
+                <div class="stat-label">Valor del inventario (COP)</div>
+                <div class="stat-value">@Model.InventoryValue.ToString("C2")</div>
                 <span class="small text-muted">Precio × stock</span>
             </div>
         </div>
@@ -97,7 +97,7 @@ else
                             <tr>
                                 <th scope="col">Producto</th>
                                 <th scope="col">Categoría</th>
-                                <th scope="col" class="text-end">Precio</th>
+                                <th scope="col" class="text-end">Precio (COP)</th>
                                 <th scope="col" class="text-center">Stock</th>
                             </tr>
                         </thead>
@@ -116,7 +116,7 @@ else
                                     </a>
                                 </td>
                                 <td class="text-muted">@(product.Category?.Name ?? "—")</td>
-                                <td class="text-end">@product.Price.ToString("C")</td>
+                                <td class="text-end">@product.Price.ToString("C2")</td>
                                 <td class="text-center"><span class="badge @stockClass">@product.Stock</span></td>
                             </tr>
                         }

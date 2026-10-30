@@ -21,7 +21,7 @@ public class Product
         ErrorMessage = "El precio debe ser mayor que cero.")]
     [Column(TypeName = "decimal(18,2)")]
     [DataType(DataType.Currency)]
-    [Display(Name = "Precio")]
+    [Display(Name = "Precio (COP)")]
     public decimal Price { get; set; }
 
     [Range(0, int.MaxValue, ErrorMessage = "El stock no puede ser negativo.")]

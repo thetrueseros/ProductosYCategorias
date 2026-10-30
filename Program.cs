@@ -31,10 +31,11 @@ builder.Services.AddDbContext<SampleDbContext>(options =>
         sql.CommandTimeout(60);
     }));
 
-// Cultura única es-ES para formatos de moneda y fecha coherentes en local y en Azure.
+// Cultura única es-CO: pesos colombianos, separadores y fechas de Colombia,
+// tanto en local como en Azure.
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var culture = new CultureInfo("es-ES");
+    var culture = new CultureInfo("es-CO");
     options.DefaultRequestCulture = new RequestCulture(culture);
     options.SupportedCultures = new[] { culture };
     options.SupportedUICultures = new[] { culture };

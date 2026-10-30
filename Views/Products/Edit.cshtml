@@ -21,7 +21,7 @@
             <div class="mb-3">
                 <label asp-for="Price" class="form-label"></label>
                 <input asp-for="Price" class="form-control" type="text" inputmode="decimal" autocomplete="off" />
-                <div class="form-text">Puedes usar coma o punto como separador decimal (1299,99 o 1299.99).</div>
+                <div class="form-text">En pesos colombianos (COP). Acepta punto de miles y coma decimal: 5.499.900 o 5499900,50.</div>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 
@@ -41,7 +41,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Fecha de creación</label>
-                <input class="form-control" value="@Model.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")" disabled />
+                <input class="form-control" value="@ColombiaTime.FromUtc(Model.FechaCreacion).ToString("dd/MM/yyyy HH:mm")" disabled />
                 <div class="form-text">La fecha de creación no se puede modificar.</div>
             </div>
 

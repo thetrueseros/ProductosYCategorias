@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace ProductosYCategorias.Infrastructure.ModelBinding;
 
 /// <summary>
-/// Registra un binder para <see cref="decimal"/> que acepta tanto el separador
-/// decimal invariante (1299.99) como el español (1299,99). Necesario porque la
-/// aplicación usa la cultura es-ES y los navegadores envían los inputs numéricos
-/// con punto.
+/// Registra un binder para <see cref="decimal"/> que acepta el separador decimal
+/// colombiano (5499900,50), el invariante (5499900.50) y separadores de miles
+/// con punto (5.499.900). Necesario porque la aplicación usa la cultura es-CO
+/// y los navegadores pueden enviar los inputs con punto o con coma.
 /// </summary>
 public sealed class FlexibleDecimalModelBinderProvider : IModelBinderProvider
 {
@@ -56,7 +56,7 @@ public sealed class FlexibleDecimalModelBinder : IModelBinder
         {
             bindingContext.ModelState.TryAddModelError(
                 bindingContext.ModelName,
-                $"El campo {displayName} debe ser un número válido (por ejemplo 1299,99).");
+                $"El campo {displayName} debe ser un número válido (por ejemplo 5499900 o 5.499.900).");
         }
 
         return Task.CompletedTask;
@@ -64,7 +64,7 @@ public sealed class FlexibleDecimalModelBinder : IModelBinder
 
     private static bool TryParse(string raw, out decimal value)
     {
-        var text = raw.Trim();
+        var text = raw.Trim().Replace("$", string.Empty).Trim();
 
         var lastComma = text.LastIndexOf(',');
         var lastDot = text.LastIndexOf('.');
@@ -78,9 +78,34 @@ public sealed class FlexibleDecimalModelBinder : IModelBinder
         }
         else if (lastComma >= 0)
         {
-            text = text.Replace(".", string.Empty).Replace(',', '.');
+            text = IsGrouped(text, ',')
+                ? text.Replace(",", string.Empty)
+                : text.Replace(',', '.');
+        }
+        else if (lastDot >= 0 && IsGrouped(text, '.'))
+        {
+            text = text.Replace(".", string.Empty);
         }
 
         return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out value);
+    }
+
+    /// <summary>
+    /// Determina si los separadores son de miles: bloques de tres dígitos
+    /// después del primero, que debe tener entre uno y tres dígitos.
+    /// </summary>
+    private static bool IsGrouped(string text, char separator)
+    {
+        var parts = text.Split(separator);
+
+        if (parts.Length < 2 ||
+            parts[0].Length is < 1 or > 3 ||
+            parts[0] == "0" ||
+            !parts[0].All(char.IsDigit))
+        {
+            return false;
+        }
+
+        return parts.Skip(1).All(part => part.Length == 3 && part.All(char.IsDigit));
     }
 }
