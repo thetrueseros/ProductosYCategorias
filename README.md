@@ -1,4 +1,4 @@
-# ProductosYCategorias
+# Productos y Categorias
 
 Aplicación web ASP.NET Core MVC para administrar un catálogo de productos y categorías. Incluye un panel con métricas del inventario, CRUD completo, búsqueda, filtros, ordenación y paginación. Usa Entity Framework Core Code-First sobre SQL Server/Azure SQL y se despliega en Azure App Service con GitHub Actions.
 
@@ -83,7 +83,7 @@ Relación: una categoría tiene muchos productos (`1:N`). La clave foránea usa 
 
 Los datos semilla incluyen 5 categorías y 20 productos de demostración con precios en COP. Son deterministas para que las migraciones sean reproducibles.
 
-## Requisitos
+## Requisitos locales
 
 - SDK de .NET 10.
 - SQL Server 2019 o superior, o una base de datos de Azure SQL.
@@ -157,6 +157,8 @@ La página de inicio resume el estado del inventario:
 
 ![Listado de categorías con el número de productos](docs/images/categories-index.png)
 
+![Detalles de un producto](docs/images/product-details.png)
+
 ![Aviso al intentar eliminar una categoría con productos](docs/images/category-delete-blocked.png)
 
 ### Productos
@@ -184,6 +186,8 @@ La fecha de creación se guarda en UTC y se muestra en la hora de Colombia (`Ame
 ### Errores
 
 Las rutas inexistentes y los errores internos usan una página propia. El código 404 muestra “Página no encontrada”; el resto muestra “Algo ha ido mal” e incluye el identificador de la solicitud para revisar los logs.
+
+![Formulario de página no encontrada](docs/images/error-404.png)
 
 ### Rutas
 
